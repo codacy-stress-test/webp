@@ -135,7 +135,7 @@ if(WEBP_UNICODE)
   add_definitions(-DUNICODE -D_UNICODE)
 endif()
 
-if(MSVC AND BUILD_SHARED_LIBS)
+if(WIN32 AND BUILD_SHARED_LIBS)
   add_definitions(-DWEBP_DLL)
 endif()
 
@@ -163,7 +163,9 @@ if(MSVC)
   set(CMAKE_STATIC_LIBRARY_PREFIX "${webp_libname_prefix}")
 endif()
 
-set(CMAKE_C_VISIBILITY_PRESET hidden)
+if(NOT WIN32)
+  set(CMAKE_C_VISIBILITY_PRESET hidden)
+endif()
 
 if(WEBP_ENABLE_WUNUSED_RESULT)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.21.0)
@@ -692,8 +694,7 @@ if(WEBP_BUILD_WEBP_JS)
         "-sWASM=0 ${emscripten_stack_size} \
          -sEXPORTED_FUNCTIONS=_WebPToSDL -sINVOKE_RUN=0 \
          -sEXPORTED_RUNTIME_METHODS=cwrap ${EMSCRIPTEN_SDL2_FLAGS} \
-         -sALLOW_MEMORY_GROWTH"
-    )
+         -sALLOW_MEMORY_GROWTH")
     set_target_properties(webp_js PROPERTIES OUTPUT_NAME webp)
     target_compile_definitions(webp_js PUBLIC EMSCRIPTEN WEBP_HAVE_SDL)
   endif()
@@ -709,8 +710,7 @@ if(WEBP_BUILD_WEBP_JS)
       "-sWASM=1 ${emscripten_stack_size} \
        -sEXPORTED_FUNCTIONS=_WebPToSDL -sINVOKE_RUN=0 \
        -sEXPORTED_RUNTIME_METHODS=cwrap ${EMSCRIPTEN_SDL2_FLAGS} \
-       -sALLOW_MEMORY_GROWTH"
-  )
+       -sALLOW_MEMORY_GROWTH")
   target_compile_definitions(webp_wasm PUBLIC EMSCRIPTEN WEBP_HAVE_SDL)
 
   target_compile_definitions(webpdspdecode PUBLIC EMSCRIPTEN)
