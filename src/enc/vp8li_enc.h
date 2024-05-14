@@ -34,7 +34,7 @@ extern "C" {
 #endif
 
 // maximum value of transform_bits_ in VP8LEncoder.
-#define MAX_TRANSFORM_BITS 6
+#define MAX_TRANSFORM_BITS (MIN_TRANSFORM_BITS + (1 << NUM_TRANSFORM_BITS) - 1)
 
 typedef enum {
   kEncoderNone = 0,
@@ -59,7 +59,8 @@ typedef struct {
 
   // Encoding parameters derived from quality parameter.
   int histo_bits_;
-  int transform_bits_;    // <= MAX_TRANSFORM_BITS.
+  int predictor_transform_bits_;    // <= MAX_TRANSFORM_BITS
+  int cross_color_transform_bits_;  // <= MAX_TRANSFORM_BITS
   int cache_bits_;        // If equal to 0, don't use color cache.
 
   // Encoding parameters derived from image characteristics.
