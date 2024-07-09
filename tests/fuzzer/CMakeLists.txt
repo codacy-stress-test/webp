@@ -17,6 +17,7 @@ macro(add_webp_fuzztest TEST_NAME)
   add_executable(${TEST_NAME} ${TEST_NAME}.cc)
   # FuzzTest bundles GoogleTest so no need to link to gtest libraries.
   target_link_libraries(${TEST_NAME} PRIVATE fuzz_utils webp ${ARGN})
+  target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_BINARY_DIR}/src)
   link_fuzztest(${TEST_NAME})
   add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
   set_property(
@@ -35,7 +36,7 @@ set(fuzztest_SOURCE_DIR ${CMAKE_BINARY_DIR}/_deps/fuzztest-src)
 FetchContent_Declare(
   fuzztest
   GIT_REPOSITORY https://github.com/google/fuzztest.git
-  GIT_TAG a40caf40aaf621dd0e04f9d8b47d1153fd2682d2
+  GIT_TAG 078ea0871cc96d3a69bad406577f176a4fa14ae9
   GIT_PROGRESS TRUE
   PATCH_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/patch.sh)
 
@@ -49,8 +50,11 @@ target_link_libraries(fuzz_utils PUBLIC webpdecoder)
 link_fuzztest(fuzz_utils)
 
 add_webp_fuzztest(advanced_api_fuzzer)
+add_webp_fuzztest(dec_fuzzer)
 add_webp_fuzztest(enc_dec_fuzzer)
+add_webp_fuzztest(enc_fuzzer imagedec)
 add_webp_fuzztest(huffman_fuzzer)
+add_webp_fuzztest(imageio_fuzzer imagedec)
 add_webp_fuzztest(simple_api_fuzzer)
 
 if(WEBP_BUILD_LIBWEBPMUX)
@@ -58,4 +62,8 @@ if(WEBP_BUILD_LIBWEBPMUX)
   add_webp_fuzztest(animdecoder_fuzzer imageioutil webpdemux)
   add_webp_fuzztest(animencoder_fuzzer libwebpmux)
   add_webp_fuzztest(mux_demux_api_fuzzer libwebpmux webpdemux)
+endif()
+
+if(WEBP_BUILD_WEBPINFO)
+  add_webp_fuzztest(webp_info_fuzzer imageioutil)
 endif()
