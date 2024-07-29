@@ -40,7 +40,7 @@ typedef struct {
   int palette_code_bits_;
   uint32_t trivial_symbol_;  // True, if histograms for Red, Blue & Alpha
                              // literal symbols are single valued.
-  int64_t bit_cost_;         // cached value of bit cost.
+  uint64_t bit_cost_;        // cached value of bit cost.
   uint64_t literal_cost_;    // Cached values of dominant entropy costs:
   uint64_t red_cost_;        // literal, red & blue.
   uint64_t blue_cost_;
@@ -63,9 +63,6 @@ typedef struct {
 void VP8LHistogramCreate(VP8LHistogram* const p,
                          const VP8LBackwardRefs* const refs,
                          int palette_code_bits);
-
-// Return the size of the histogram for a given cache_bits.
-int VP8LGetHistogramSize(int cache_bits);
 
 // Set the palette_code_bits and reset the stats.
 // If init_arrays is true, the arrays are also filled with 0's.
